@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+import os
+import sys
+
+if __name__ == "__main__":
+	if len(sys.argv) is not 5:
+		print "Invalid parameters", ",".join(sys.argv)
+		sys.exit(1)
+	g = sys.argv[1]
+	a = sys.argv[2]
+	v = sys.argv[3]
+	p = sys.argv[4]
+	folder = os.path.dirname(p)
+	jar_path = os.path.join(folder, "%s-%s.jar"%(a,v))
+	pom_path = os.path.join(folder, "%s-%s.pom"%(a,v))
+	src_jar = os.path.join(folder, "%s-%s-sources.jar"%(a, v))
+	jar_exists = os.path.exists(jar_path)
+	pom_exists = os.path.exists(pom_path)
+	src_exists = os.path.exists(src_jar)
+	post_fix = "-DrepositoryId=%s -Durl=%s"%("your_maven_repository_id","your_maven_repo_url")
+	if jar_exists or pom_exists:
+		packaging = "jar"
+		if not jar_exists:
+			packaging = "pom"
+		cmd = '''mvn deploy:deploy-file -DgroupId=%s -DartifactId=%s -Dversion=%s  -Dpackaging=%s '''%(g, a, v, packaging)
+		if jar_exists and pom_exists:
+			cmd += ''' -Dfile=%s -DpomFile=%s '''%(jar_path, pom_path)
+		elif not jar_exists:
+			cmd += ''' -Dfile=%s '''%(pom_path)
+		# upload jar
+		print cmd + post_fix
+		# upload source archive
+		if src_exists:
+			cmd = '''mvn deploy:deploy-file -DgroupId=%s -DartifactId=%s -Dversion=%s  -Dpackaging=%s '''%(g, a, v, "java-source")
+			cmd += "-Dfile=%s "%(src_jar) + post_fix
+			print cmd
+	else:
+		print "#Missing jar / pom for %s %s %s" %(g, a, v)

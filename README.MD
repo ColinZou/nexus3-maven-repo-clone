@@ -3,7 +3,10 @@ A simple guide for anyone want to copy a single maven repo from one nexus server
 Or duplicate a maven repo on a same nexus server. I could put everything together into one piece latter.
 ## 0. Before You Start
 Before you can continue, make sure you have access to you nexus server. This guide was tested in ubuntu 64bit server.
-And you have python installed on the server.
+You must have python installed on the server, and mvn command is in your PATH.  
+
+    python >= 2.6
+    maven >= 3.0.0
 
 Nexus 3 has its own storage structure. I basically was trying to parsing its .properties files for doing the job.  
 ## 1. Clone
@@ -40,10 +43,11 @@ https://www.baeldung.com/maven-deploy-nexus
 You will see a file named call-generate-nexus-upload-command in your work folder. Run the following command.
     
     sh call-generate-nexus-upload-command | sh
-    
-You could check the output of the following command before you let shell run it. 
-    
-    sh call-generate-nexus-upload-command      
+You could wait or step out while it may take sometime, depends on your repo size. 
 ## Note
+You could check the output of the following command before you run it in shell. 
+        
+        sh call-generate-nexus-upload-command
+        
     # command for building the main.go
     env GOOS=linux GOARCH=amd64 go build -o clone-tool-linux-amd64 main.go 
